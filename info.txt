@@ -1,0 +1,139 @@
+================================================================================
+Context-Aware System
+================================================================================
+
+1. .bob_rules - Rules for Bob to Follow
+----------------------------------------
+This file defines HOW I SHOULD BEHAVE and WHAT PROCESSES I SHOULD FOLLOW:
+- Context-aware processing workflow
+- How to search and load project context automatically
+- Priority order for context files
+- Communication preferences
+- Code style guidelines
+
+Think of it as: My instruction manual - "Bob, this is how you should work"
+
+
+2. project_context/ - Project Encyclopedia
+-------------------------------------------
+This directory contains INFORMATION ABOUT YOUR PROJECT:
+- project_overview.md - What the project is about
+- architecture.md - How the system is built
+- coding_standards.md - How code should be written
+- api_documentation.md - API specifications
+- business_logic.md - Business rules and workflows
+- dependencies.md - Tech stack and tools
+- context_index.md - Quick reference guide
+- README.md - How to use the context system
+
+Think of it as: Your project's encyclopedia - "This is what the project is and how it works"
+
+
+================================================================================
+HOW THEY WORK TOGETHER
+================================================================================
+
+┌─────────────────────────────────────────────────────────┐
+│                    You Give a Task                       │
+│              "Add user authentication"                   │
+└─────────────────────┬───────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────┐
+│                   .bob_rules                             │
+│  "Bob, follow this process:"                             │
+│  1. Extract keywords from task                           │
+│  2. Search project_context/ for relevant info            │
+│  3. Read matching context files                          │
+│  4. Use that knowledge to complete the task              │
+└─────────────────────┬───────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────┐
+│              project_context/                            │
+│  "Here's the project knowledge:"                         │
+│  • Architecture: We use JWT authentication               │
+│  • Business Logic: Auth workflow is register→verify→login│
+│  • API Docs: Auth endpoints follow /auth/* pattern       │
+│  • Standards: Hash passwords with bcrypt                 │
+└─────────────────────┬───────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────┐
+│              Bob Implements with Context                 │
+│  "I'll add JWT authentication following your patterns"   │
+└─────────────────────────────────────────────────────────┘
+
+
+================================================================================
+SUMMARY
+================================================================================
+
+.bob_rules = Instructions for Bob (the AI)
+project_context/ = Knowledge about your project
+
+Together, they enable Bob to work intelligently with full understanding of 
+your project, following your preferred workflows and patterns automatically!
+
+The system is ready to use. Start filling out the project_context/ files with 
+your project information, and Bob will automatically use that knowledge when 
+you give tasks.
+
+
+================================================================================
+EXAMPLE WORKFLOW
+================================================================================
+
+WITHOUT CONTEXT SYSTEM:
+-----------------------
+You: "Add user authentication"
+Bob: "I'll add basic authentication. What pattern should I use?"
+You: "Use JWT"
+Bob: "What endpoints do you need?"
+You: "Login and register"
+Bob: "What's the workflow?"
+... (many back-and-forth questions)
+
+
+WITH CONTEXT SYSTEM:
+--------------------
+You: "Add user authentication"
+Bob: [Automatically searches project_context/]
+     [Finds: business_logic.md, architecture.md, api_documentation.md]
+     [Reads all relevant context]
+     "Based on your JWT architecture and auth workflow,
+      I'll implement authentication with:
+      - /auth/register endpoint with email verification
+      - /auth/login endpoint returning JWT tokens
+      - Password hashing with bcrypt
+      - Token refresh mechanism
+      
+      Proceeding with implementation..."
+
+
+================================================================================
+BENEFITS
+================================================================================
+
+- Faster Development: Less time explaining, more time building
+- Better Accuracy: Bob understands your patterns and follows them
+- Living Documentation: Context files serve as project documentation
+- Team Alignment: Everyone (including Bob) follows the same patterns
+- Consistency: All code follows established conventions
+- Smart Suggestions: Bob can suggest improvements based on context
+
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Fill out the most important context files:
+   - project_overview.md - Describe your project
+   - architecture.md - Document your tech stack
+   - coding_standards.md - Define your code style
+
+2. Test it out - Give Bob a task and watch how context is used automatically
+
+3. Iterate - Add more details as your project evolves
+
+4. Keep it updated - Update context files when things change
