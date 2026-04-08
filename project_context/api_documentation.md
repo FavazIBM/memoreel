@@ -1,294 +1,412 @@
-# API Documentation
+# API Documentation for Memoir App
+
+---
 
 ## API Overview
-- **Base URL**: [e.g., https://api.example.com/v1]
-- **API Version**: [e.g., v1]
-- **Protocol**: [REST, GraphQL, gRPC]
-- **Authentication**: [JWT, OAuth2, API Key]
+
+* **Base URL**: https://api.memoir.app/v1
+* **Protocol**: REST
+* **Authentication**: JWT Bearer Token
+
+---
 
 ## Authentication
 
-### Authentication Method
-[Describe how authentication works]
+### Header
 
-### Example
 ```http
 Authorization: Bearer <token>
 ```
 
-### Getting Access Token
-```http
-POST /auth/login
-Content-Type: application/json
+---
 
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
+## Response Format (GLOBAL)
 
-Response:
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "refreshToken": "...",
-  "expiresIn": 3600
-}
-```
+### Success
 
-## Common Headers
-```http
-Content-Type: application/json
-Authorization: Bearer <token>
-Accept: application/json
-X-API-Version: v1
-```
-
-## Response Format
-
-### Success Response
 ```json
 {
   "success": true,
-  "data": { ... },
-  "message": "Operation successful"
+  "data": {},
+  "message": "Success"
 }
 ```
 
-### Error Response
+### Error
+
 ```json
 {
   "success": false,
   "error": {
     "code": "ERROR_CODE",
-    "message": "Human-readable error message",
-    "details": { ... }
+    "message": "Error message"
   }
 }
 ```
 
-## HTTP Status Codes
-| Code | Meaning | Usage |
-|------|---------|-------|
-| 200 | OK | Successful GET, PUT, PATCH |
-| 201 | Created | Successful POST |
-| 204 | No Content | Successful DELETE |
-| 400 | Bad Request | Invalid request data |
-| 401 | Unauthorized | Missing or invalid authentication |
-| 403 | Forbidden | Insufficient permissions |
-| 404 | Not Found | Resource not found |
-| 422 | Unprocessable Entity | Validation error |
-| 500 | Internal Server Error | Server error |
+---
 
-## API Endpoints
+#  AUTH
 
-### Users
+## POST /auth/register
 
-#### Get All Users
-```http
-GET /users
-Query Parameters:
-  - page: number (default: 1)
-  - limit: number (default: 10)
-  - sort: string (default: "createdAt")
-  - order: "asc" | "desc" (default: "desc")
+### Body
 
-Response: 200 OK
+```json
+{
+  "email": "string (required, valid email)",
+  "password": "string (required, min 6 chars)"
+}
+```
+
+### Response
+
+```json
 {
   "success": true,
   "data": {
-    "users": [...],
-    "pagination": {
-      "page": 1,
-      "limit": 10,
-      "total": 100,
-      "totalPages": 10
+    "token": "jwt_token",
+    "user": {
+      "id": "user_id",
+      "email": "user@example.com"
     }
   }
 }
 ```
 
-#### Get User by ID
-```http
-GET /users/:id
+---
 
-Response: 200 OK
-{
-  "success": true,
-  "data": {
-    "id": "123",
-    "email": "user@example.com",
-    "name": "John Doe",
-    "createdAt": "2024-01-01T00:00:00Z"
-  }
-}
-```
+## POST /auth/login
 
-#### Create User
-```http
-POST /users
-Content-Type: application/json
+### Body
 
-{
-  "email": "user@example.com",
-  "name": "John Doe",
-  "password": "securePassword123"
-}
-
-Response: 201 Created
-{
-  "success": true,
-  "data": {
-    "id": "123",
-    "email": "user@example.com",
-    "name": "John Doe"
-  }
-}
-```
-
-#### Update User
-```http
-PUT /users/:id
-Content-Type: application/json
-
-{
-  "name": "Jane Doe",
-  "email": "jane@example.com"
-}
-
-Response: 200 OK
-{
-  "success": true,
-  "data": {
-    "id": "123",
-    "name": "Jane Doe",
-    "email": "jane@example.com"
-  }
-}
-```
-
-#### Delete User
-```http
-DELETE /users/:id
-
-Response: 204 No Content
-```
-
-### [Add more endpoint groups as needed]
-
-## Pagination
-All list endpoints support pagination:
-```
-GET /resource?page=1&limit=20
-```
-
-Response includes pagination metadata:
 ```json
 {
-  "data": [...],
-  "pagination": {
-    "page": 1,
-    "limit": 20,
-    "total": 100,
-    "totalPages": 5,
-    "hasNext": true,
-    "hasPrev": false
+  "email": "string (required)",
+  "password": "string (required)"
+}
+```
+
+---
+
+## POST /auth/google
+
+### Body
+
+```json
+{
+  "token": "google_oauth_token (required)"
+}
+```
+
+---
+
+#  USER
+
+## PUT /user/profile
+
+ Requires Authentication
+
+### Body
+
+```json
+{
+  "email": "string (optional)",
+  "avatarUrl": "string (optional)"
+}
+```
+
+---
+
+## PUT /user/password
+
+ Requires Authentication
+
+### Body
+
+```json
+{
+  "oldPassword": "string (required)",
+  "newPassword": "string (required, min 6 chars)"
+}
+```
+
+---
+
+#  PROJECTS
+
+## POST /projects
+
+ Requires Authentication
+
+### Body
+
+```json
+{
+  "title": "string (required, min 3 chars)",
+  "type": "string (required, must be valid occasion type)"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "project_id",
+    "title": "My Birthday",
+    "status": "draft"
   }
 }
 ```
 
-## Filtering & Sorting
+---
 
-### Filtering
-```
-GET /users?status=active&role=admin
-```
+## GET /projects
 
-### Sorting
-```
-GET /users?sort=createdAt&order=desc
-```
+ Requires Authentication
 
-### Search
+### Query
+
 ```
-GET /users?search=john
+page (optional)
+limit (optional)
 ```
 
-## Rate Limiting
-- **Rate Limit**: [e.g., 100 requests per minute]
-- **Headers**:
-  ```
-  X-RateLimit-Limit: 100
-  X-RateLimit-Remaining: 95
-  X-RateLimit-Reset: 1640000000
-  ```
+---
 
-## Webhooks
-[If applicable, describe webhook endpoints and payloads]
+## GET /projects/:id
 
-### Webhook Events
-| Event | Description | Payload |
-|-------|-------------|---------|
-| user.created | New user registered | {...} |
-| order.completed | Order completed | {...} |
+ Requires Authentication
 
-## Data Models
+### Rules
 
-### User Model
-```typescript
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: "admin" | "user";
-  status: "active" | "inactive";
-  createdAt: string;
-  updatedAt: string;
+* User MUST own the project
+
+---
+
+## PUT /projects/:id/privacy
+
+ Requires Authentication
+
+### Body
+
+```json
+{
+  "privacy": "public | private (required)"
 }
 ```
 
-### [Add more models as needed]
+---
 
-## Error Codes
-| Code | Description | Resolution |
-|------|-------------|------------|
-| AUTH_001 | Invalid credentials | Check email/password |
-| AUTH_002 | Token expired | Refresh token |
-| VAL_001 | Validation error | Check request data |
-| RES_001 | Resource not found | Verify resource ID |
+#  MEDIA
 
-## API Versioning
-- Current version: v1
-- Version in URL: `/v1/users`
-- Deprecation policy: [Describe policy]
+## POST /media/upload
 
-## Testing & Examples
+ Requires Authentication
 
-### cURL Examples
-```bash
-# Get users
-curl -X GET "https://api.example.com/v1/users" \
-  -H "Authorization: Bearer <token>"
+### Content-Type
 
-# Create user
-curl -X POST "https://api.example.com/v1/users" \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","name":"John Doe"}'
+```http
+multipart/form-data
 ```
 
-### Postman Collection
-[Link to Postman collection if available]
+### Rules
 
-## SDK & Client Libraries
-- **JavaScript/TypeScript**: [Link or package name]
-- **Python**: [Link or package name]
-- **[Other languages]**: [Link or package name]
+* Supported: JPG, PNG, MP4, MOV
+* Max size: 50MB
 
-## Support & Resources
-- **API Status**: [Status page URL]
-- **Support Email**: [Email]
-- **Documentation**: [Docs URL]
-- **Changelog**: [Changelog URL]
+### Fields
+
+* file (required)
+* projectId (required)
 
 ---
-**Keywords**: api, endpoints, rest, authentication, documentation
-**Last Updated**: [Date]
+
+## DELETE /media/:id
+
+ Requires Authentication
+
+### Rules
+
+* Must belong to user
+
+---
+
+#  VIDEO
+
+## POST /video/generate
+
+ Requires Authentication
+
+### Body
+
+```json
+{
+  "projectId": "string (required)"
+}
+```
+
+### State Transition
+
+* draft → processing
+
+---
+
+## GET /video/:projectId
+
+ Requires Authentication
+
+---
+
+#  PUBLISH
+
+## POST /projects/:id/publish
+
+ Requires Authentication
+
+### Rules
+
+* Allowed ONLY if status = completed
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "publicUrl": "https://memoir.app/public/abc123",
+    "qrCodeUrl": "https://..."
+  }
+}
+```
+
+### State Transition
+
+* completed → published
+
+---
+
+# 🌐 PUBLIC
+
+## GET /public/:slug
+
+ Public Endpoint
+
+### Rules
+
+* slug MUST be unique
+* slug generated at publish
+
+---
+
+#  QR CODE
+
+## GET /qr/:projectId
+
+ Requires Authentication
+
+---
+
+#  STATE FLOW (STRICT)
+
+```text
+draft → processing → completed → published
+processing failure → failed
+```
+
+---
+
+#  PAGINATION
+
+```http
+GET /projects?page=1&limit=10
+```
+
+---
+
+#  VALIDATION RULES
+
+* All inputs MUST be validated
+* Reject invalid formats
+* Reject missing required fields
+
+---
+
+#  AUTHORIZATION RULES
+
+* Users can ONLY access their own resources
+* Public endpoints are read-only
+
+---
+
+#  ERROR CODES
+
+| Code      | Description         |
+| --------- | ------------------- |
+| AUTH_001  | Invalid credentials |
+| AUTH_002  | Unauthorized        |
+| VAL_001   | Validation error    |
+| PROJ_001  | Project not found   |
+| MEDIA_001 | Upload failed       |
+| VIDEO_001 | Processing failed   |
+
+---
+
+#  RATE LIMIT
+
+* 100 requests per minute
+
+---
+
+#  DATA MODELS
+
+## Project
+
+```ts
+interface Project {
+  id: string;
+  title: string;
+  type: string;
+  status: "draft" | "processing" | "completed" | "published";
+  privacy: "public" | "private";
+}
+```
+
+---
+
+## Media
+
+```ts
+interface Media {
+  id: string;
+  projectId: string;
+  type: "image" | "video";
+  url: string;
+  orderIndex: number;
+}
+```
+
+---
+
+## VideoJob
+
+```ts
+interface VideoJob {
+  id: string;
+  projectId: string;
+  status: "queued" | "processing" | "completed" | "failed";
+}
+```
+
+---
+
+#  AI CONSTRAINTS
+
+* DO NOT invent endpoints
+* DO NOT change request/response format
+* DO NOT skip validation
+* FOLLOW architecture.md strictly
+
+IF ANYTHING IS UNCLEAR → STOP AND ASK
