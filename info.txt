@@ -44,7 +44,7 @@ HOW THEY WORK TOGETHER
 │  "Bob, follow this process:"                             │
 │  1. Extract keywords from task                           │
 │  2. Search project_context/ for relevant info            │
-│  3. Read matching context files                          │
+│  3. Read matching context files,                         │
 │  4. Use that knowledge to complete the task              │
 └─────────────────────┬───────────────────────────────────┘
                       │

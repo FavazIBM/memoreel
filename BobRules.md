@@ -1,4 +1,11 @@
-# AI Code Generation Rules
+# Bob Rules Configuration File
+# Define custom rules and preferences for Bob, your AI coding assistant
+
+## Context-Aware Processing
+- Always search project_context/ directory for relevant context
+- Use context files to inform decisions
+- Match keywords from prompts to context files
+- Read relevant context before processing tasks
 
 ## 1. General Principles
 - Generate clean, readable, and modular code.
