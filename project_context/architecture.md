@@ -743,3 +743,109 @@ AI MUST:
 
 IF STRUCTURE IS UNCLEAR:
 → STOP and ASK USER for clarification
+
+## UI Design Source of Truth (CRITICAL)
+
+The UI MUST strictly follow the design images located in:
+
+project_context/Design/
+
+---
+
+### Mapping of Screens to Pages
+
+* Upload Page → Design/Upload.png
+
+* QR Page → Design/QR.png
+
+* Video Output Page →
+
+  * Design/output 1.png
+  * Design/output 2.png
+
+* Dashboard → Design/Dashboard.png
+
+* Create Project → Design/Create.png
+
+* Memorial Creation Page →
+
+  * Design/create a memorial 1.png
+  * Design/create a memorial 2.png
+
+* Authentication Page → Design/authentication_page.png
+
+* Settings Page →
+
+  * Design/account settings 1.png
+  * Design/account settings 2.png
+
+---
+
+### Multi-Screenshot Handling (STRICT)
+
+Some pages are split across multiple images.
+
+AI MUST:
+
+* Combine all related screenshots into ONE page
+* Treat images as:
+
+  * Top section → first image
+  * Bottom/remaining → second image
+
+AI MUST NOT:
+
+* Ignore any screenshot
+* Create separate pages for split images
+
+---
+
+### Image Priority Rules (VERY IMPORTANT)
+
+* Design images are the **PRIMARY SOURCE OF TRUTH**
+* Text-based UI descriptions are **SECONDARY**
+
+IF conflict occurs:
+→ FOLLOW DESIGN IMAGES
+
+---
+
+### Layout Enforcement
+
+AI MUST:
+
+* Match layout structure exactly
+* Match positioning of elements
+* Match grouping of components
+
+AI MUST NOT:
+
+* Rearrange sections
+* Change layout structure
+* Simplify UI
+
+---
+
+### Component Extraction Rule
+
+AI SHOULD:
+
+* Break UI into reusable components
+* BUT preserve visual structure
+
+---
+
+### Missing Details Rule
+
+If any UI detail is unclear from images:
+
+→ AI MUST ASK USER
+→ DO NOT GUESS
+
+---
+
+## STRICT ENFORCEMENT
+
+Failure to follow design images is NOT allowed.
+
+UI must visually match provided screenshots as closely as possible.
