@@ -2,7 +2,7 @@
 Context-Aware System
 ================================================================================
 
-1. .bob_rules - Rules for Bob to Follow
+1. BobRules.md - Rules for Bob to Follow
 ----------------------------------------
 This file defines HOW I SHOULD BEHAVE and WHAT PROCESSES I SHOULD FOLLOW:
 - Context-aware processing workflow
@@ -40,7 +40,7 @@ HOW THEY WORK TOGETHER
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────┐
-│                   .bob_rules                             │
+│                   BobRules.md                            │
 │  "Bob, follow this process:"                             │
 │  1. Extract keywords from task                           │
 │  2. Search project_context/ for relevant info            │
@@ -69,7 +69,7 @@ HOW THEY WORK TOGETHER
 SUMMARY
 ================================================================================
 
-.bob_rules = Instructions for Bob (the AI)
+BobRules.md = Instructions for Bob (the AI)
 project_context/ = Knowledge about your project
 
 Together, they enable Bob to work intelligently with full understanding of 
