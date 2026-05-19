@@ -1,10 +1,10 @@
-# API Documentation for Memoir App
+# API Documentation for Memoreel App
 
 ---
 
 ## API Overview
 
-* **Base URL**: https://api.memoir.app/v1
+* **Base URL**: https://api.memoreel.app/v1
 * **Protocol**: REST
 * **Authentication**: JWT Bearer Token
 
@@ -276,7 +276,7 @@ multipart/form-data
 {
   "success": true,
   "data": {
-    "publicUrl": "https://memoir.app/public/abc123",
+    "publicUrl": "https://memoreel.app/public/abc123",
     "qrCodeUrl": "https://..."
   }
 }
