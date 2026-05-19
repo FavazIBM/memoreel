@@ -1,247 +1,287 @@
 # Business Logic & Domain Knowledge
 
-## Domain Overview
-[High-level description of the business domain]
+---
 
-## Core Business Concepts
+## 1. Domain Overview
 
-### [Concept 1]
-**Definition**: [What it is]
-**Purpose**: [Why it exists]
-**Rules**: 
-- [Rule 1]
-- [Rule 2]
-- [Rule 3]
+The system is a **memory video generation platform** where users create videos for occasions or memorials using uploaded media and predefined templates.
 
-### [Concept 2]
-**Definition**: [What it is]
-**Purpose**: [Why it exists]
-**Rules**:
-- [Rule 1]
-- [Rule 2]
+The system automates:
 
-## Business Rules
-
-### User Management
-- Users must verify email before accessing features
-- Passwords must meet complexity requirements
-- Account lockout after [X] failed login attempts
-- Session timeout after [X] minutes of inactivity
-
-### [Feature/Module Name]
-- [Business rule 1]
-- [Business rule 2]
-- [Business rule 3]
-
-## Workflows
-
-### User Registration Flow
-1. User submits registration form
-2. System validates input data
-3. System checks if email already exists
-4. System creates user account (inactive status)
-5. System sends verification email
-6. User clicks verification link
-7. System activates account
-8. User can now log in
-
-### [Another Workflow]
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-
-## Validation Rules
-
-### Email Validation
-- Must be valid email format
-- Must not already exist in system
-- Must be from allowed domains (if applicable)
-
-### Password Validation
-- Minimum [X] characters
-- Must contain uppercase letter
-- Must contain lowercase letter
-- Must contain number
-- Must contain special character
-
-### [Other Validations]
-- [Validation rule 1]
-- [Validation rule 2]
-
-## Calculations & Formulas
-
-### [Calculation Name]
-```
-Formula: [Mathematical formula or logic]
-Example: 
-  Input: [values]
-  Output: [result]
-```
-
-### Pricing Logic
-```
-Base Price: $X
-Discount: Y%
-Tax: Z%
-Final Price = (Base Price - Discount) * (1 + Tax)
-```
-
-## State Machines
-
-### Order Status Flow
-```
-[Draft] → [Pending] → [Processing] → [Shipped] → [Delivered]
-                ↓
-            [Cancelled]
-```
-
-**Transitions**:
-- Draft → Pending: User submits order
-- Pending → Processing: Payment confirmed
-- Processing → Shipped: Order dispatched
-- Shipped → Delivered: Customer receives order
-- Any → Cancelled: User/Admin cancels order
-
-### [Another State Machine]
-[Describe states and transitions]
-
-## Business Constraints
-
-### Time-based Constraints
-- Orders can only be placed during business hours
-- Refunds must be requested within [X] days
-- Subscriptions renew on [specific date/interval]
-
-### Quantity Constraints
-- Minimum order quantity: [X]
-- Maximum items per order: [Y]
-- Stock availability checks required
-
-### Financial Constraints
-- Minimum transaction amount: $[X]
-- Maximum transaction amount: $[Y]
-- Currency: [USD, EUR, etc.]
-
-## Permissions & Access Control
-
-### User Roles
-| Role | Permissions | Description |
-|------|-------------|-------------|
-| Admin | Full access | System administrator |
-| Manager | Read/Write most resources | Department manager |
-| User | Limited access | Regular user |
-| Guest | Read-only public data | Unauthenticated user |
-
-### Feature Access Matrix
-| Feature | Admin | Manager | User | Guest |
-|---------|-------|---------|------|-------|
-| View Dashboard | ✓ | ✓ | ✓ | ✗ |
-| Create Orders | ✓ | ✓ | ✓ | ✗ |
-| Manage Users | ✓ | ✗ | ✗ | ✗ |
-| View Reports | ✓ | ✓ | ✗ | ✗ |
-
-## Data Retention & Lifecycle
-
-### Data Retention Policies
-- User data: Retained for [X] years after account deletion
-- Transaction logs: Retained for [Y] years
-- Audit logs: Retained for [Z] years
-- Temporary data: Deleted after [N] days
-
-### Data Archival
-- Active data: [Definition and storage]
-- Archived data: [Definition and storage]
-- Deletion policy: [When and how data is permanently deleted]
-
-## Integration Rules
-
-### Third-party Services
-- [Service Name]: [When and how it's used]
-- [Service Name]: [When and how it's used]
-
-### Data Synchronization
-- [What data syncs]
-- [Sync frequency]
-- [Conflict resolution strategy]
-
-## Edge Cases & Special Scenarios
-
-### Scenario 1: [Description]
-**Condition**: [When this happens]
-**Expected Behavior**: [What should happen]
-**Implementation**: [How it's handled]
-
-### Scenario 2: [Description]
-**Condition**: [When this happens]
-**Expected Behavior**: [What should happen]
-**Implementation**: [How it's handled]
-
-## Business Metrics & KPIs
-
-### Key Metrics
-- [Metric 1]: [Definition and target]
-- [Metric 2]: [Definition and target]
-- [Metric 3]: [Definition and target]
-
-### Success Criteria
-- [Criterion 1]
-- [Criterion 2]
-- [Criterion 3]
-
-## Compliance & Regulations
-
-### Data Privacy
-- GDPR compliance requirements
-- User consent management
-- Right to be forgotten implementation
-
-### Industry Standards
-- [Standard 1]: [How it's implemented]
-- [Standard 2]: [How it's implemented]
-
-## Glossary
-
-| Term | Definition |
-|------|------------|
-| [Term 1] | [Definition] |
-| [Term 2] | [Definition] |
-| [Term 3] | [Definition] |
-
-## Common Scenarios & Examples
-
-### Example 1: [Scenario Name]
-**Context**: [Background]
-**Input**: [What comes in]
-**Process**: [What happens]
-**Output**: [What comes out]
-
-### Example 2: [Scenario Name]
-**Context**: [Background]
-**Input**: [What comes in]
-**Process**: [What happens]
-**Output**: [What comes out]
-
-## Decision Trees
-
-### [Decision Name]
-```
-Is user authenticated?
-├─ Yes → Check permissions
-│         ├─ Has permission → Allow access
-│         └─ No permission → Deny access (403)
-└─ No → Redirect to login
-```
-
-## Notifications & Alerts
-
-### User Notifications
-- [Event]: [Notification sent]
-- [Event]: [Notification sent]
-
-### System Alerts
-- [Condition]: [Alert triggered]
-- [Condition]: [Alert triggered]
+* Media organization
+* Template-based video generation
+* Public sharing via links and QR codes
 
 ---
-**Keywords**: business logic, domain, rules, workflows, validation
-**Last Updated**: [Date]
+
+## 2. Core Business Concepts
+
+### Project
+
+**Definition**: A container representing a memory video.
+
+**Purpose**: Central unit for storing media, text, and generated video.
+
+**Rules**:
+
+* Each project belongs to one user
+* A project must have a title and occasion type
+* A project must follow a strict lifecycle
+
+---
+
+### Media
+
+**Definition**: Images or videos uploaded by user.
+
+**Purpose**: Input for video generation.
+
+**Rules**:
+
+* Must have orderIndex
+* Must be validated (type + size)
+* Sequence MUST be preserved
+
+---
+
+### Video
+
+**Definition**: Generated output of a project.
+
+**Purpose**: Final consumable content.
+
+**Rules**:
+
+* Generated asynchronously
+* Must follow template rules
+* Only one active video per project
+
+---
+
+### Template
+
+**Definition**: Predefined styling and structure for video generation.
+
+**Purpose**: Ensure consistent output quality.
+
+**Rules**:
+
+* Selected based on occasion + category + mood
+* NO randomness allowed
+
+---
+
+### Memorial
+
+**Definition**: Special project type for tribute.
+
+**Purpose**: Create remembrance content.
+
+**Rules**:
+
+* Must include personName, deathDate
+* Uses calm visual style
+* Can be linked to QR
+
+---
+
+### QR Code
+
+**Definition**: Scannable link to public project.
+
+**Purpose**: Physical sharing (e.g., tombstone)
+
+**Rules**:
+
+* Generated only after publish
+* Must be permanent
+* Must map to public URL
+
+---
+
+## 3. Business Rules
+
+### Project Rules
+
+* Projects start in "draft"
+* Cannot publish before video generation
+* Only completed projects can be published
+
+---
+
+### Media Rules
+
+* Media must be uploaded before generation
+* orderIndex must be unique per project
+* Media cannot be modified during processing
+
+---
+
+### Video Rules
+
+* Generation must be asynchronous
+* Only one generation job per project at a time
+* Failed jobs must update project status
+
+---
+
+### Publish Rules
+
+* Publish allowed ONLY if status = completed
+* Publish generates:
+
+  * public link
+  * QR code
+
+---
+
+## 4. Workflows
+
+### Project Creation Flow
+
+1. User selects occasion
+2. User enters title
+3. Project created (status = draft)
+
+---
+
+### Media Upload Flow
+
+1. User uploads media
+2. System validates file
+3. System stores file (S3)
+4. System saves metadata with orderIndex
+
+---
+
+### Video Generation Flow
+
+1. User clicks generate
+2. System creates VideoJob
+3. Status → processing
+4. Queue processes job
+5. FFmpeg generates video
+6. Status → completed OR failed
+
+---
+
+### Publish Flow
+
+1. User clicks publish
+2. System checks status = completed
+3. System generates slug
+4. System generates QR
+5. Status → published
+
+---
+
+## 5. Validation Rules
+
+### Project
+
+* title: required, min 3 chars
+* type: must be valid occasion
+
+---
+
+### Media
+
+* file type: JPG, PNG, MP4, MOV
+* size limit enforced
+
+---
+
+### Memorial
+
+* personName required
+* deathDate required
+
+---
+
+## 6. State Machine
+
+### Project State Flow
+
+```
+draft → processing → completed → published
+           ↓
+         failed
+```
+
+### Transitions
+
+* draft → processing: video generation starts
+* processing → completed: success
+* processing → failed: error
+* completed → published: publish action
+
+---
+
+## 7. Permissions & Access Control
+
+* Users can ONLY access their own projects
+* Public pages are accessible without login
+* Private projects are restricted
+
+---
+
+## 8. Data Lifecycle
+
+* Media stored in S3
+* Videos stored permanently
+* Public links remain active after publish
+
+---
+
+## 9. Edge Cases
+
+### Case: No Media Uploaded
+
+* Generation must be blocked
+
+---
+
+### Case: Duplicate orderIndex
+
+* Must be rejected
+
+---
+
+### Case: Video Processing Failure
+
+* Status → failed
+* User can retry
+
+---
+
+### Case: Publish Before Completion
+
+* Must be rejected
+
+---
+
+## 10. Notifications
+
+* Video processing started
+* Video completed
+* Video failed
+
+---
+
+## 11. Key Metrics
+
+* Total projects created
+* Video generation success rate
+* Average processing time
+
+---
+
+## 12. AI Constraints (CRITICAL)
+
+* DO NOT invent business rules
+* DO NOT change workflows
+* DO NOT skip validation
+* FOLLOW architecture.md + api_documentation.md strictly
+
+IF ANYTHING IS UNCLEAR:
+→ STOP AND ASK USER

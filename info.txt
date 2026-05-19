@@ -2,7 +2,7 @@
 Context-Aware System
 ================================================================================
 
-1. .bob_rules - Rules for Bob to Follow
+1. BobRules.md - Rules for Bob to Follow
 ----------------------------------------
 This file defines HOW I SHOULD BEHAVE and WHAT PROCESSES I SHOULD FOLLOW:
 - Context-aware processing workflow
@@ -25,6 +25,7 @@ This directory contains INFORMATION ABOUT YOUR PROJECT:
 - dependencies.md - Tech stack and tools
 - context_index.md - Quick reference guide
 - README.md - How to use the context system
+- Design/ - UI/UX design references
 
 Think of it as: Your project's encyclopedia - "This is what the project is and how it works"
 
@@ -40,28 +41,35 @@ HOW THEY WORK TOGETHER
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────┐
-│                   .bob_rules                             │
-│  "Bob, follow this process:"                             │
+│                   BobRules.md                            │
+│  "MANDATORY - Follow EVERY TIME, NO EXCEPTIONS:"         │
 │  1. Extract keywords from task                           │
 │  2. Search project_context/ for relevant info            │
 │  3. Read matching context files                          │
-│  4. Use that knowledge to complete the task              │
+│  4. Combine context with original prompt                 │
+│  5. Generate SUPER PROMPT with all context               │
+│  6. Use enriched prompt to complete the task             │
 └─────────────────────┬───────────────────────────────────┘
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────┐
 │              project_context/                            │
-│  "Here's the project knowledge:"                         │
+│  "Project Encyclopedia - Find ALL relevant info:"        │
 │  • Architecture: We use JWT authentication               │
 │  • Business Logic: Auth workflow is register→verify→login│
 │  • API Docs: Auth endpoints follow /auth/* pattern       │
 │  • Standards: Hash passwords with bcrypt                 │
+│  → Combine into SUPER PROMPT with original task          │
 └─────────────────────┬───────────────────────────────────┘
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────┐
-│              Bob Implements with Context                 │
-│  "I'll add JWT authentication following your patterns"   │
+│         Bob Creates SUPER PROMPT & Implements            │
+│  Original: "Add user authentication"                     │
+│  + Context: JWT, register→verify→login, /auth/*, bcrypt  │
+│  = SUPER PROMPT: "Add JWT authentication with            │
+│    register→verify→login flow, /auth/* endpoints,        │
+│    bcrypt password hashing per project standards"        │
 └─────────────────────────────────────────────────────────┘
 
 
@@ -69,15 +77,18 @@ HOW THEY WORK TOGETHER
 SUMMARY
 ================================================================================
 
-.bob_rules = Instructions for Bob (the AI)
-project_context/ = Knowledge about your project
+BobRules.md = MANDATORY instructions for Bob (followed EVERY TIME)
+project_context/ = Project encyclopedia (searched for EVERY prompt)
 
-Together, they enable Bob to work intelligently with full understanding of 
-your project, following your preferred workflows and patterns automatically!
+Together, they enable Bob to:
+1. ALWAYS follow the defined workflow (no exceptions)
+2. Find ALL relevant project context for every task
+3. Generate SUPER PROMPTS combining your task + project knowledge
+4. Work intelligently with complete understanding of your project
 
-The system is ready to use. Start filling out the project_context/ files with 
-your project information, and Bob will automatically use that knowledge when 
-you give tasks.
+The system is ready to use. Start filling out the project_context/ files with
+your project information, and Bob will automatically search, combine, and use
+that knowledge to create context-rich super prompts for every task you give.
 
 
 ================================================================================
@@ -95,45 +106,32 @@ Bob: "What's the workflow?"
 ... (many back-and-forth questions)
 
 
-WITH CONTEXT SYSTEM:
---------------------
+WITH CONTEXT SYSTEM (MANDATORY WORKFLOW):
+------------------------------------------
 You: "Add user authentication"
-Bob: [Automatically searches project_context/]
-     [Finds: business_logic.md, architecture.md, api_documentation.md]
-     [Reads all relevant context]
-     "Based on your JWT architecture and auth workflow,
-      I'll implement authentication with:
+
+Bob: [STEP 1: Extract keywords] → "authentication", "user", "auth"
+     [STEP 2: Search project_context/] → Found 3 relevant files
+     [STEP 3: Read context files]
+       • business_logic.md: register→verify→login workflow
+       • architecture.md: JWT token-based authentication
+       • api_documentation.md: /auth/* endpoint patterns
+       • coding_standards.md: bcrypt for password hashing
+     
+     [STEP 4: Combine with original prompt]
+     [STEP 5: Generate SUPER PROMPT]
+       Original: "Add user authentication"
+       + Context: JWT, register→verify→login, /auth/*, bcrypt
+       = SUPER PROMPT: "Add JWT-based user authentication with
+         register→verify→login workflow, /auth/* endpoints, and
+         bcrypt password hashing following project standards"
+     
+     [STEP 6: Execute with full context]
+     "I'll implement JWT authentication with:
       - /auth/register endpoint with email verification
+      - /auth/verify endpoint for email confirmation
       - /auth/login endpoint returning JWT tokens
-      - Password hashing with bcrypt
+      - Password hashing with bcrypt (per coding standards)
       - Token refresh mechanism
       
       Proceeding with implementation..."
-
-
-================================================================================
-BENEFITS
-================================================================================
-
-- Faster Development: Less time explaining, more time building
-- Better Accuracy: Bob understands your patterns and follows them
-- Living Documentation: Context files serve as project documentation
-- Team Alignment: Everyone (including Bob) follows the same patterns
-- Consistency: All code follows established conventions
-- Smart Suggestions: Bob can suggest improvements based on context
-
-
-================================================================================
-NEXT STEPS
-================================================================================
-
-1. Fill out the most important context files:
-   - project_overview.md - Describe your project
-   - architecture.md - Document your tech stack
-   - coding_standards.md - Define your code style
-
-2. Test it out - Give Bob a task and watch how context is used automatically
-
-3. Iterate - Add more details as your project evolves
-
-4. Keep it updated - Update context files when things change
