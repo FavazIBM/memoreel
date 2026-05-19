@@ -1,16 +1,20 @@
-# System Architecture & Product Specification 
+# System Architecture & Product Specification
 ---
 
 ## 1. Product Overview
 
-A web platform for creating emotionally rich memory videos for occasions and memorials.
+**Memoreel** is a web platform for creating emotionally rich memory video reels for occasions and memorials.
 
 Core capabilities:
 
-* Upload media (images/videos/text)
-* Generate videos via templates
+* User account creation and authentication
+* Template-based reel creation for different occasions
+* Upload media (images/videos)
+* Automated video generation via backend video editor
+* Preview, recreate, and publish reels
 * Share via public links and QR codes
-* Memorial system with QR for physical usage
+* Memorial system with QR for physical usage (tombstones, memorial cards)
+* Project management (My Projects for drafts, Memorials for published)
 
 ---
 
@@ -18,19 +22,23 @@ Core capabilities:
 
 ### Wizard Flow
 
-1. Select Occasion
-2. Enter Title
-3. Upload Media
-4. Preview & Generate
+1. **Select Occasion**: Choose from predefined templates (birthday, anniversary, memorial, etc.)
+2. **Enter Details**: Answer basic info questions about the occasion (title, dates, person details for memorials)
+3. **Upload Media**: Upload photos and videos with drag-and-drop interface
+4. **Generate Video**: Backend automatically creates reel using FFmpeg
+5. **Preview**: Watch the generated video
+6. **Recreate (Optional)**: Regenerate if changes needed
+7. **Publish**: Make reel public and generate QR code
 
 ---
 
 ### Wizard UI Requirements
 
-* Step indicator (1–4)
+* Step indicator (1–7 steps)
 * Active + completed states
 * Back / Next navigation
-* State persistence
+* State persistence across steps
+* Occasion-specific forms (different questions based on occasion type)
 
 ---
 
@@ -38,14 +46,19 @@ Core capabilities:
 
 ### Features
 
-* Email/password login
+* Email/password registration and login
 * Google OAuth login
+* Account settings management
+* Profile picture upload
+* Password change functionality
 
 ### Backend Rules
 
 * Password hashing (bcrypt)
 * JWT authentication
 * Secure sessions
+* Token refresh mechanism
+* Email validation
 
 ---
 
@@ -59,34 +72,41 @@ Core capabilities:
 
 ## 5. Dashboard System
 
-### Sidebar
+### Sidebar Navigation
 
-* Dashboard
-* My Projects
-* Memorials
-* Templates
-* Settings
+* Dashboard (home/overview)
+* My Projects (incomplete/draft projects)
+* Memorials (published reels)
+* Templates (browse available templates)
+* Settings (account settings)
 
 ---
 
 ### Dashboard Sections
 
-* Welcome banner (gradient)
-* Stats:
-
-  * totalProjects
-  * completedProjects
-  * publishedProjects
+* Welcome banner with gradient background
+* Quick stats cards:
+  * Total Projects (all projects)
+  * Completed Projects (ready to publish)
+  * Published Projects (live memorials)
+* Recent projects grid
+* Quick action: "Create New Reel" button
 
 ---
 
-### Project Card
+### Project Card Components
 
-* thumbnail
-* title
-* occasion badge
-* status badge
-* actions: edit, generate, publish
+* Thumbnail image (from first media or default)
+* Title
+* Occasion badge (with icon and color)
+* Status badge (draft, processing, completed, published)
+* Date created/modified
+* Action buttons:
+  * Edit (for drafts)
+  * Generate (for drafts with media)
+  * Preview (for completed)
+  * Publish (for completed)
+  * View (for published)
 
 ---
 
@@ -94,23 +114,34 @@ Core capabilities:
 
 ### Fields
 
-* id
-* userId
-* title
-* type
-* status
-* privacy
+* id (unique identifier)
+* userId (owner)
+* title (user-defined)
+* type (occasion type)
+* status (draft, processing, completed, published, failed)
+* privacy (public, friends, private - currently only public)
+* createdAt
+* updatedAt
+* publishedAt
+* metadata (occasion-specific data)
 
 ---
 
 ### State Machine
 
+```
 draft → processing → completed → published
-failure → failed
+           ↓
+        failed (can retry)
+```
 
-RULE:
+**RULES:**
 
-* ONLY completed → publish
+* Projects start in "draft" state
+* Can only generate video from "draft" state
+* Can only publish from "completed" state
+* Failed projects can be regenerated
+* Published projects cannot be unpublished (permanent)
 
 ---
 
@@ -119,20 +150,61 @@ RULE:
 ### Categories
 
 #### Celebration
-
-birthday, anniversary, wedding, graduation, baby_shower, housewarming, retirement
+* birthday
+* anniversary
+* wedding
+* graduation
+* baby_shower
+* housewarming
+* retirement
 
 #### Social
+* farewell
+* trip_memory
+* friendship
+* reunion
+* milestone
+* achievement
 
-farewell, trip_memory, friendship, reunion, milestone, achievement
-
-#### Emotional
-
-memorial, condolence, remembrance_day
+#### Emotional (Memorial)
+* memorial
+* condolence
+* remembrance_day
 
 #### Custom
+* custom (user-defined)
 
-custom
+---
+
+### Occasion-Specific Forms
+
+Each occasion type has specific questions:
+
+**Birthday:**
+* Person's name
+* Age/Birthday date
+* Relationship to user
+* Special message
+
+**Anniversary:**
+* Couple names
+* Anniversary date
+* Years together
+* Special message
+
+**Memorial:**
+* Deceased person's name (required)
+* Birth date (optional)
+* Death date (required)
+* Relationship
+* Memorial description (required)
+* Profile image (optional)
+
+**Wedding:**
+* Couple names
+* Wedding date
+* Venue
+* Special message
 
 ---
 
@@ -190,22 +262,57 @@ S3 paths:
 
 ## 11. Text Content System
 
-* Stored separately
+* Stored in project metadata
+* Occasion-specific text fields
 * Linked to project
-* Injected into video pipeline
+* Injected into video pipeline as overlays
+* Supports multi-line text
+* Font styling based on template
 
 ---
 
 ## 12. Video Generation Pipeline (STRICT)
 
-1. Validate input
-2. Select template (NO randomness)
-3. Normalize media
-4. Sort by orderIndex
-5. Apply transitions
-6. Apply text overlays
-7. Add background music
-8. Render
+**Process Flow:**
+
+1. **Validate Input**
+   * Check media exists
+   * Verify media formats
+   * Validate orderIndex sequence
+
+2. **Select Template**
+   * Based on occasion type
+   * Match category and mood
+   * NO randomness - deterministic selection
+
+3. **Normalize Media**
+   * Resize images to standard dimensions
+   * Convert videos to standard format
+   * Optimize file sizes
+
+4. **Sort Media**
+   * Order by orderIndex (ascending)
+   * Preserve user-defined sequence
+
+5. **Apply Transitions**
+   * Fade, slide, zoom based on template
+   * Timing based on template duration
+
+6. **Apply Text Overlays**
+   * Title screens
+   * Occasion-specific text
+   * Credits/closing
+
+7. **Add Background Music**
+   * Template-specific music track
+   * Fade in/out
+   * Loop if needed
+
+8. **Render Video**
+   * FFmpeg processing
+   * Output: MP4 format
+   * Quality: 1080p
+   * Upload to S3
 
 ---
 
@@ -225,10 +332,11 @@ VideoJob:
 
 ### Queue Rules
 
-* Queue: Redis + BullMQ
+* Queue: Spring Batch + Quartz Scheduler
 * Job type: video_generation
 * Retries: 3
 * Backoff: exponential
+* Use @Async for asynchronous processing
 
 ---
 
@@ -295,50 +403,117 @@ momentCount = total media items
 
 ## 17. Memorial System
 
-### Required
+### Required Fields
 
-* personName
-* deathDate
-* description
+* personName (deceased person's full name)
+* deathDate (date of passing)
+* description (memorial message/tribute)
 
-### Optional
+### Optional Fields
 
-* birthDate
-* profileImage
+* birthDate (date of birth)
+* profileImage (photo of deceased)
+* relationship (to user)
+* lifeStory (extended biography)
 
 ---
 
-### Additional
+### Memorial-Specific Features
 
-* privacy (public/private)
+* Calm, respectful visual templates
+* Soft background music
+* Privacy settings (public/private)
+* QR code generation for physical placement
+* Permanent public URL
+* View counter (optional)
+
+---
+
+### Memorial Display
+
+* Hero section with person's photo
+* Name and dates (birth - death)
+* Memorial video player
+* Description/tribute text
+* Photo gallery from uploaded media
+* QR code for sharing
 
 ---
 
 ## 18. QR Code System
 
-* QR linked to public URL
-* Downloadable
-* Permanent
+### Generation
+
+* Generated automatically on publish
+* Links to public memorial URL
+* Format: PNG image
+* Size: 512x512px
+* Error correction: High level
+
+### Features
+
+* Downloadable (high resolution)
+* Printable quality
+* Permanent (never expires)
+* Scannable from mobile devices
+* Direct link to memorial page
+
+### Use Cases
+
+* Print on memorial cards
+* Display at funeral/memorial service
+* Engrave on tombstones
+* Include in obituaries
+* Share digitally
 
 ---
 
 ## 19. Public Link Rules
 
-* slug must be:
+### Slug Generation
 
-  * unique
-  * URL-safe
-* generated at publish
+* Generated at publish time
+* Must be unique across all projects
+* URL-safe characters only
+* Format: random alphanumeric (8-12 chars)
+* Example: `memoreel.app/m/abc123xyz`
+
+### Link Behavior
+
+* Permanent (never changes)
+* Publicly accessible (no auth required)
+* SEO-friendly
+* Shareable via social media
+* Embeddable (future feature)
 
 ---
 
 ## 20. Settings System
 
-* Profile update
-* Password change
-* Avatar upload
-* Preferences (toggles)
-* Plan system
+### Account Settings Sections
+
+**Profile Information:**
+* Name
+* Email
+* Profile picture upload
+* Bio (optional)
+
+**Security:**
+* Change password
+* Two-factor authentication (future)
+* Active sessions management
+
+**Preferences:**
+* Email notifications toggle
+* Privacy defaults
+* Language selection
+* Theme (light/dark)
+
+**Subscription/Plan:**
+* Current plan display
+* Usage statistics
+* Upgrade options
+* Billing information
 
 ---
 
@@ -504,12 +679,14 @@ momentCount = total media items
 
 ## 26. Infrastructure
 
-* Frontend: React
-* Backend: Node.js
-* Queue: Redis + BullMQ
+* Frontend: React + TypeScript
+* Backend: Java 17 + Spring Boot 3.2
+* Queue: Spring Batch + Quartz Scheduler
 * Storage: AWS S3
 * Processing: FFmpeg
-* Database: PostgreSQL
+* Database: PostgreSQL 15
+* Cache: Redis 7
+* Build Tools: Maven (Backend), Vite (Frontend)
 
 ---
 
@@ -648,60 +825,110 @@ frontend/
 
 ---
 
-## Backend Structure (Node.js Modular Architecture)
+## Backend Structure (Spring Boot Modular Architecture)
 
 ```
 backend/
   src/
-    modules/
-      auth/
-        auth.controller.ts
-        auth.service.ts
-        auth.model.ts
-        auth.routes.ts
+    main/
+      java/
+        com/
+          memoreel/
+            auth/
+              controller/
+                AuthController.java
+              service/
+                AuthService.java
+              repository/
+                UserRepository.java
+              dto/
+                LoginRequest.java
+                RegisterRequest.java
+              entity/
+                User.java
 
-      project/
-        project.controller.ts
-        project.service.ts
-        project.model.ts
-        project.routes.ts
+            project/
+              controller/
+                ProjectController.java
+              service/
+                ProjectService.java
+              repository/
+                ProjectRepository.java
+              dto/
+                ProjectDTO.java
+                CreateProjectRequest.java
+              entity/
+                Project.java
 
-      media/
-        media.controller.ts
-        media.service.ts
-        media.model.ts
-        media.routes.ts
+            media/
+              controller/
+                MediaController.java
+              service/
+                MediaService.java
+              repository/
+                MediaRepository.java
+              entity/
+                Media.java
 
-      video/
-        video.controller.ts
-        video.service.ts
-        video.model.ts
-        video.routes.ts
+            video/
+              controller/
+                VideoController.java
+              service/
+                VideoService.java
+              batch/
+                VideoProcessingJob.java
+                VideoProcessor.java
+              entity/
+                Video.java
+                VideoJob.java
 
-      qr/
-        qr.controller.ts
-        qr.service.ts
-        qr.model.ts
-        qr.routes.ts
+            qr/
+              controller/
+                QRCodeController.java
+              service/
+                QRCodeService.java
+              entity/
+                QRCode.java
 
-    queue/
-      jobs/
-        video.job.ts
-      processors/
-        video.processor.ts
+            config/
+              SecurityConfig.java
+              S3Config.java
+              RedisConfig.java
+              BatchConfig.java
 
-    config/           # DB, env, app config
-    middlewares/      # Auth, error handling
-    validators/       # Request validation schemas
-    utils/            # Helper utilities
+            exception/
+              GlobalExceptionHandler.java
+              CustomExceptions.java
+
+            util/
+              FFmpegUtil.java
+              FileUtil.java
+
+      resources/
+        application.properties
+        application-dev.properties
+        application-prod.properties
+        db/
+          migration/
+            V1__create_users_table.sql
+            V2__create_projects_table.sql
+
+    test/
+      java/
+        com/
+          memoreel/
+            # Test classes mirror main structure
 ```
 
 ### Rules
 
 * Each module MUST be self-contained
-* NO global controllers/services/models outside modules
+* Follow Spring Boot package conventions
 * Business logic MUST be inside services
 * Controllers MUST only handle request/response
+* Use DTOs for API requests/responses
+* Entities for database mapping only
+* Use constructor injection for dependencies
 
 ---
 
@@ -709,7 +936,7 @@ backend/
 
 ```
 shared/
-  types/              # Shared types between frontend & backend
+  types/              # Shared TypeScript types for frontend
 ```
 
 ---
@@ -717,8 +944,13 @@ shared/
 ## Environment Configuration
 
 ```
-.env                # Secrets (DO NOT COMMIT)
-.env.example        # Example config
+backend/src/main/resources/
+  application.properties           # Main config
+  application-dev.properties       # Dev environment
+  application-prod.properties      # Production environment
+  
+# Secrets (DO NOT COMMIT)
+application-local.properties       # Local overrides (gitignored)
 ```
 
 ---
@@ -727,7 +959,8 @@ shared/
 
 ```
 README.md           # Project documentation
-package.json        # Dependencies
+backend/pom.xml     # Maven dependencies
+frontend/package.json  # Frontend dependencies
 ```
 
 ---
@@ -754,30 +987,23 @@ project_context/Design/
 
 ### Mapping of Screens to Pages
 
-* Upload Page → Design/Upload.png
+**Authentication:**
+* Login/Register Page → Design/authentication_page.png
 
-* QR Page → Design/QR.png
+**Dashboard:**
+* Main Dashboard → Design/Dashboard.png
 
-* Video Output Page →
+**Create Reel Flow:**
+* Occasion Selection → Design/Create.png
+* Memorial Details Form → Design/create a memorial 1.png + Design/create a memorial 2.png
+* Media Upload → Design/Upload.png
 
-  * Design/output 1.png
-  * Design/output 2.png
+**Output & Publishing:**
+* Video Preview → Design/output 1.png + Design/output 2.png
+* QR Code Display → Design/QR.png
 
-* Dashboard → Design/Dashboard.png
-
-* Create Project → Design/Create.png
-
-* Memorial Creation Page →
-
-  * Design/create a memorial 1.png
-  * Design/create a memorial 2.png
-
-* Authentication Page → Design/authentication_page.png
-
-* Settings Page →
-
-  * Design/account settings 1.png
-  * Design/account settings 2.png
+**Settings:**
+* Account Settings → Design/account settings 1.png + Design/account settings 2.png
 
 ---
 
@@ -849,3 +1075,50 @@ If any UI detail is unclear from images:
 Failure to follow design images is NOT allowed.
 
 UI must visually match provided screenshots as closely as possible.
+
+---
+
+## Additional Memoreel-Specific Requirements
+
+### Privacy Implementation (Phase 1)
+
+* **Current**: All published reels are PUBLIC
+* **Future**: Friends and Private options
+* Privacy setting stored but not enforced yet
+* UI shows privacy selector (disabled for non-public)
+
+### Project Organization
+
+**My Projects Page:**
+* Shows all draft and processing projects
+* Filter by status
+* Sort by date created/modified
+* Search by title
+* Bulk actions (delete, archive)
+
+**Memorials Page:**
+* Shows all published projects
+* Grid or list view
+* Filter by occasion type
+* Sort by publish date
+* Search functionality
+* View count display
+
+### Notification System
+
+* Video generation started
+* Video generation completed
+* Video generation failed
+* Project published successfully
+* QR code ready for download
+
+### Error Handling
+
+* Upload failures with retry
+* Video generation failures with regenerate option
+* Network errors with user-friendly messages
+* Validation errors with inline feedback
+
+---
+
+**Last Updated**: 2026-05-19
