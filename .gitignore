@@ -1,0 +1,203 @@
+# Memoreel - Git Ignore Configuration
+
+# ============================================
+# ENVIRONMENT & SECRETS
+# ============================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+secrets/
+
+# ============================================
+# DEPENDENCIES
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ============================================
+# BUILD OUTPUT
+# ============================================
+dist/
+dist-ssr/
+build/
+out/
+*.local
+
+# ============================================
+# LOGS
+# ============================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ============================================
+# EDITOR & IDE
+# ============================================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.tmproj
+.vscode/
+.history/
+
+# ============================================
+# OPERATING SYSTEM
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# JAVA & SPRING BOOT
+# ============================================
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+
+# Spring Boot
+spring-boot-*.log
+application-*.properties
+!application.properties
+!application-dev.properties
+!application-prod.properties
+
+# ============================================
+# TESTING
+# ============================================
+coverage/
+*.lcov
+.nyc_output/
+junit.xml
+test-results/
+*.test.js.snap
+
+# ============================================
+# TEMPORARY FILES
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~.nib
+tmp/
+temp/
+
+# ============================================
+# MEDIA & UPLOADS (Development)
+# ============================================
+uploads/
+media/
+videos/
+qrcodes/
+thumbnails/
+
+# ============================================
+# DATABASE
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# ============================================
+# CACHE
+# ============================================
+.cache/
+.parcel-cache/
+.npm/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# ============================================
+# MISC
+# ============================================
+.vercel
+.turbo
+.next/
+.nuxt/
+.docusaurus/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ============================================
+# MEMOREEL SPECIFIC
+# ============================================
+# Generated videos (development)
+generated-videos/
+# QR codes (development)
+generated-qr/
+# FFmpeg temp files
+ffmpeg-temp/
+# Batch processing temp
+batch-temp/
+
+# Made with Bob
