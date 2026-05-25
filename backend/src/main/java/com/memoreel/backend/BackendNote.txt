@@ -1,0 +1,2 @@
+Backend implementation paused for clarification.
+Need to batch-generate the remaining in-memory backend classes and then scaffold the frontend.

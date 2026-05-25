@@ -1,0 +1,4 @@
+file 'C:/Users/ReethuJoseph/memoir/backend/storage/tmp/project-3/001-image.mp4'
+duration 4
+file 'C:/Users/ReethuJoseph/memoir/backend/storage/tmp/project-3/002-image.mp4'
+duration 4
